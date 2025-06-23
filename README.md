@@ -26,8 +26,9 @@ Use `orient_lipids.py` to pre-orient your ATB-generated lipid structures:
 ```bash
 python3 orient_lipids.py
 ```
+The lipids need to be pre-oriented along Z before PackMol can process them properly. The .pdb file names are hard coded into the script.
 
-### Step 2: Generate Membrane
+### Step 2: Generate PACKMOL Input
 Run `genPackMol.py` with your aligned structures:
 ```bash
 python3 genPackMol.py --pdb aligned_lipid1.pdb aligned_lipid2.pdb \
