@@ -98,16 +98,16 @@ graph TD
 # Speed-optimized parameters
 tolerance 5.0          # Forgiving for complex systems
 nloop 30              # Reduced optimization cycles
-maxit 300             # Reduced iterations per cycle
+maxit 1000             # Reduced iterations per cycle
 constrain_rotation    # Tight rotational constraints
 ```
 
 ## ⚡ Performance Optimization
 
 ### Current Speed Features
-- **Reduced iterations**: `nloop 30`, `maxit 300` (vs typical 50/500)
+- **Reduced iterations**: `nloop 30`, `maxit 1000` 
 - **Tight constraints**: Limited rotation ranges for faster convergence
-- **Optimized tolerance**: 5.0 Å balance between speed and quality
+- **Optimized tolerance**: 10.0 Å balance between speed and quality
 - **Streamlined I/O**: Minimal file operations and memory usage
 - **Smart positioning**: Pre-calculated Z-constraints reduce search space
 
@@ -122,7 +122,7 @@ f.write("maxit 200\n")       # From 300
 
 #### 2. Increase Tolerance
 ```python
-f.write("tolerance 6.0\n")   # From 5.0
+f.write("tolerance 15.0\n")   # From 10.0
 ```
 
 #### 3. Simplify Constraints
@@ -163,7 +163,7 @@ This script **only works** with phospholipids and glycolipids generated using th
 
 ### 1. **Realistic Lipid Conformations**
 - **genPackMol**: Preserves natural lipid curvature and flexibility
-- **WebGen**: Often straightens lipids, creating artificial rod-like structures
+- **WebGen**: Straightens lipids, creating artificial rod-like structures, removes cis/trans information for double bonds on alkyl chains
 
 ### 2. **True Interdigitation**
 - Creates proper leaflet overlap with controlled interdigitation depth
@@ -174,13 +174,12 @@ This script **only works** with phospholipids and glycolipids generated using th
 - No manual topology conversion required
 
 ### 4. **Speed Optimization**
-- Generates usable membranes in ~30 minutes
+- Generates usable membranes in ~30 minutes or less
 - Fully optimized systems in ~12 hours
 - Pre-optimized PACKMOL parameters
 
 ### 5. **Biological Realism**
 - Maintains lipid tail flexibility
-- Preserves headgroup hydration shells
 - Creates realistic membrane thickness variations
 
 ## 📁 Output Files
@@ -204,7 +203,7 @@ membrane.pdb          # Final membrane (after running PACKMOL)
 - Reduce `target_total` for testing
 
 **Overlapping atoms in input:**
-- Use `align_lipids.py` to pre-process structures
+- Use `orient_lipids.py` to pre-process structures
 - Check individual PDB files for internal overlaps
 - Consider energy minimization of input structures
 
@@ -217,11 +216,13 @@ membrane.pdb          # Final membrane (after running PACKMOL)
 
 ```bash
 # 1. Prepare lipids (if needed)
-python3 align_lipids.py 02_S5PG.pdb
-python3 align_lipids.py 02_S5LG.pdb
+python3 orient_lipids.py
+
+## The lipid filenames (.pdbs) are hard coded in.
+
 
 # 2. Generate membrane
-python3 genPackMol.py --pdb aligned_02_S5PG.pdb aligned_02_S5LG.pdb \
+python3 genPackMol.py --pdb oriented_02_S5PG.pdb oriented_02_S5LG.pdb \
                      --numbers 40 10 --apl 70 --target_total 50
 
 # 3. Build with PACKMOL
@@ -234,7 +235,7 @@ packmol < PackMol.inp
 
 - **ATB**: [Automated Topology Builder](https://atb.uq.edu.au/)
 - **PACKMOL**: [Molecular Packing Tool](http://leandro.iqm.unicamp.br/m3g/packmol/)
-- **Interdigitated Membranes**: Specialized lipid arrangements found in extremophiles
+- **Interdigitated Membranes**
 
 ## 📄 License
 
