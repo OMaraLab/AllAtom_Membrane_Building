@@ -6,23 +6,27 @@ import numpy as np
 u = mda.Universe('solv.pdb')
 
 # Define selections
+leaflet_A_phosphates = u.select_atoms('segid A and name P1 P2')
+leaflet_B_phosphates = u.select_atoms('segid B and name P1 P2')
 leaflet_A = u.select_atoms('segid A and not resname SOL')
 leaflet_B = u.select_atoms('segid B and not resname SOL')
 membrane = leaflet_A + leaflet_B
 water = u.select_atoms('resname SOL')
 
 print(f"Total atoms: {len(u.atoms)}")
+print(f"Leaflet A P1/P2 atoms: {len(leaflet_A_phosphates)}")
+print(f"Leaflet B P1/P2 atoms: {len(leaflet_B_phosphates)}")
 print(f"Leaflet A atoms: {len(leaflet_A)}")
 print(f"Leaflet B atoms: {len(leaflet_B)}")
 print(f"Total membrane atoms: {len(membrane)}")
 print(f"Water molecules: {len(water.residues)}")
 
-# Calculate center of mass for each leaflet
-com_A = leaflet_A.center_of_mass()
-com_B = leaflet_B.center_of_mass()
+# Calculate center of mass for P1/P2 atoms in each leaflet
+com_A = leaflet_A_phosphates.center_of_mass()
+com_B = leaflet_B_phosphates.center_of_mass()
 
-print(f"Leaflet A COM: {com_A}")
-print(f"Leaflet B COM: {com_B}")
+print(f"Leaflet A P1/P2 COM: {com_A}")
+print(f"Leaflet B P1/P2 COM: {com_B}")
 
 # Determine which coordinate axis is the membrane normal (largest difference)
 diff = np.abs(com_A - com_B)
